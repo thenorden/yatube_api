@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
 
 from posts.models import Comment, Follow, Group, Post, User
 
@@ -8,10 +7,7 @@ class PostSerializer(serializers.ModelSerializer):
     """
     Post serializer. Mandatory field "author".
     """
-    author = serializers.SlugRelatedField(
-        slug_field='username',
-        read_only=True
-    )
+    author = serializers.SlugRelatedField(slug_field='username', read_only=True)
 
     class Meta:
         fields = '__all__'
@@ -34,35 +30,20 @@ class FollowSerializer(serializers.ModelSerializer):
     Follow serializer. Checks the request method and occurrence of errors.
     Has unique fields.
     """
-    user = serializers.SlugRelatedField(
-        slug_field='username',
-        read_only=True,
-        default=serializers.CurrentUserDefault()
-    )
-    following = serializers.SlugRelatedField(
-        slug_field='username',
-        queryset=User.objects.all()
-    )
+    user = serializers.SlugRelatedField(slug_field='username', read_only=True, default=serializers.CurrentUserDefault())
+    following = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
 
     def validate_following(self, following):
         if self.context.get('request').method == 'POST':
             if following is None:
-                raise serializers.ValidationError('Request missing a field '
-                                                  '"following"')
+                raise serializers.ValidationError('Request missing a field following')
             if self.context.get('request').user == following:
-                raise serializers.ValidationError('You cant subscribe to '
-                                                  'yourself')
+                raise serializers.ValidationError('You cant subscribe to yourself')
         return following
 
     class Meta:
         fields = '__all__'
         model = Follow
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Follow.objects.all(),
-                fields=('user', 'following')
-            )
-        ]
 
 
 class GroupSerializer(serializers.ModelSerializer):

@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db import models
 
 User = get_user_model()
@@ -34,6 +35,10 @@ class Group(models.Model):
 class Follow(models.Model):
     user = models.ForeignKey(User, related_name='follower', on_delete=models.CASCADE)
     author = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
+
+    def clean(self):
+        if self.user == self.author:
+            raise ValidationError('You can`t subscribe to yourself')
 
     class Meta:
         unique_together = [['user', 'author']]
