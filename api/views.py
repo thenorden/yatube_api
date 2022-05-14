@@ -2,64 +2,28 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from rest_framework.decorators import permission_classes
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 
+from .permissions import IsAuthorOrReadOnly
 from posts.models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 
 
-# class PostCreateAPIView(ListCreateAPIView):
-#     queryset = Post.objects.all()
-#     serializer_class = PostSerializer
-#
-#     def perform_create(self, serializer):
-#         serializer.save(author=self.request.user)
-#
-#
-# class PostRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
-#     queryset = Post.objects.all()
-#     serializer_class = PostSerializer
+class PostViewSet(viewsets.ModelViewSet):
+    serializer_class = PostSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
 
+    def get_queryset(self):
+        queryset = Post.objects.select_related('group')
+        group = self.request.query_params.get('group', None)
+        if group is not None:
+            queryset = queryset.filter(group__slug=group)
+        return queryset
 
-# class CommentsCreateAPIView(ListCreateAPIView):
-#     queryset = Comment.objects.all(post__pk=id)
-#     serializer_class = CommentSerializer
-#
-#     def perform_create(self, serializer):
-#         serializer.save(author=self.request.user)
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
-# class PostViewSet(viewsets.ModelViewSet):
-#     queryset = Post.objects.all()
-#     serializer_class = PostSerializer
-#
-#     def perform_create(self, serializer):
-#         serializer.save(author=self.request.user)
-#
-#
-# class CommentViewSet(viewsets.ModelViewSet):
-#     queryset = Comment.objects.all()
-#     serializer_class = CommentSerializer
-#
-#     def perform_create(self, serializer):
-#         serializer.save(author=self.request.user)
-#
-#     def get_queryset(self):
-#         post = get_object_or_404(Post, pk=self.kwargs['post_id'])
-#         comments = post.comments.all()
-#         return comments
-
-
-# class CommentViewSet(viewsets.ModelViewSet):
-#     queryset = Comment.objects.all()
-#     serializer_class = CommentSerializer
-#
-#     def perform_create(self, serializer):
-#         serializer.save(author=self.request.user)
-#
-#     def get_queryset(self):
-#         post = get_object_or_404(Post, pk=self.kwargs['post_id'])
-#         return post.comments.all()
 
 
