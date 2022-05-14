@@ -9,10 +9,10 @@ router.register(r'posts', views.PostViewSet)
 router.register(r'posts/(?P<post_id>[0-9]+)/comments', views.CommentViewSet)
 
 urlpatterns = [
-    path('api/v1/drf-auth/', include('rest_framework.urls')),
+    # path('api/v1/drf-auth/', include('rest_framework.urls')),
     path('api/v1/', include(router.urls))
 ]
 
 urlpatterns += [
-    path('api-token-auth/', obtain_auth_token)
+    path('api/v1/api-token-auth/', obtain_auth_token)
 ]
