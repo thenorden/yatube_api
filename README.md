@@ -1,64 +1,63 @@
-# Финальный проект по API
+[![Python](https://img.shields.io/badge/-Python-464646?style=flat-square&logo=Python)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/-Django-464646?style=flat-square&logo=Django)](https://www.djangoproject.com/)
+[![Django REST Framework](https://img.shields.io/badge/-Django%20REST%20Framework-464646?style=flat-square&logo=Django%20REST%20Framework)](https://www.django-rest-framework.org/)
+
+# API for Yatube Social Network
+
+API для взаимодействия с социальной сетью [Yatube](https://github.com/thenorden/YaTube-Based_on_function)
+
 ## Описание
-#### Польза проекта в том, что он дает пользоваться функционалом приложения не посещая сайт.
-##### Реализован функционал дающий возможность:
-* Подписываться на пользователя.
-* Просматривать, создавать новые, удалять и изменять посты.
-* Просматривать и создавать группы.
-* Комментировать, смотреть, удалять и обновлять комментарии.
-* Фильтровать по полям.
+Данный проект является планомерным развитием социальной сети для публикации дневников и заметок [Yatube](https://github.com/thenorden/YaTube-Based_on_function). В ней пользователь отправлял запросы на сервер, а в ответ получал готовые HTML-шаблоны со всей необходимой информацией и оформлением. Теперь же нашем распоряжении есть полноценное API для этого проекта, разработанное на основе архитектурного стиля REST. Основное отличие от прошлой версии заключается в том, что данные поступают в клиентскую часть в формате JSON, а не в виде HTML-шаблонов, что позволяет использовать API для реализации веб-сервиса типа SPA. Иными словами, [Yatube](https://github.com/thenorden/YaTube-Based_on_function) + API = Универсальность.
 
-#### К API есть документация по адресу `http://localhost:8000/redoc/`
-## Установка 
-Клонируем репозиторий на локальную машину:
+## Технологии
+- [Python 3](https://www.python.org/downloads/)
+- [Django](https://www.djangoproject.com/)
+- [Django REST framework](https://www.django-rest-framework.org/)
+- [Git](https://github.com/)
 
-```$ git clone https://github.com/netshy/api_final_yatube.git```
+## Установка
+1. Клонировать репозиторий
+```
+git clone https://github.com/thenorden/YaTube-Based_on_function
+```
+2. Создать виртуальное окружение
+```
+python -m venv venv
+```
+3. Активировать виртуальное окружение
+```
+source venv/scripts/activate
+```
+4. Установить необходимые пакеты для работы приложения из файла зависимостей
+```
+pip install -r requirements.txt
+```
 
- Создаем виртуальное окружение:
- 
- ```$ python -m venv venv```
- 
- Устанавливаем зависимости:
+## Примеры взаимодействия с API
+Данный проект имеет широкий фунционал и поддерживает все CRUD-методы (Create, Read, Update, Delete) взаимодействия с базой данных. Ниже в качастве примера приведены запросы для взаимодействия с публикациями.
 
-```$ pip install -r requirements.txt```
-
-Создание и применение миграций:
-
-```$ python manage.py makemigrations``` и ```$ python manage.py migrate```
-
-Запускаем django сервер:
-
-```$ python manage.py runserver```
-
-Все готово к использованию API!
-
-## Примеры
-Для формирования ответов и запросов будет использована программа [Insomnia](https://insomnia.rest/).
-
-#### Получаем токен
-
-Отправляем POST-запрос на адрес ```api/v1/token/``` и передаем 2 поля в `data`. 
-
-1. `username` - указываем имя пользователя.
-2. `password` - указываем пароль пользователя.
-
-___Примечание.___ 
-* Токен `refresh` нужен, чтобы обновить текущий токен. 
-* Токен `access` нужно сохранить и бережно *хранить*. Используется для аунтефикации пользователя.
-* Жизнь токена 1 год, в настройках можно изменить.
-
-![](https://i.ibb.co/zXcRxFL/image.png)
-
-#### Создаем новый пост
-
-Передаем POST-запрос, в заголовке указываем `Authorization`:`Bearer <токен>`
-
-* __Обязательное поле: `text`__
-
-![](https://i.ibb.co/fXbtQJ1/image.png)
-
-#### Фильтруем посты по номеру группы
-
-Передаем GET-запрос, в `params` указываем поле __group__.
-
-![](https://i.ibb.co/DMV9kfk/image.png)
+1. Получить список всех публикаций
+```
+(GET) http://127.0.0.1:8000/api/v1/posts/
+```
+2. Создать новую публикацию
+```
+(POST) http://127.0.0.1:8000/api/v1/posts/
+```
+3. Получить публикацию по id
+```
+(GET) http://127.0.0.1:8000/api/v1/posts/{id}/
+```
+4. Обновить публикацию по id
+```
+(PUT) http://127.0.0.1:8000/api/v1/posts/{id}/
+```
+5. Частично обновить публикацию по id
+```
+(PATCH) http://127.0.0.1:8000/api/v1/posts/{id}/
+```
+6. Удалить публикацию по id
+```
+ (DELETE) http://127.0.0.1:8000/api/v1/posts/{id}/
+```
+Полный список всех запросов можно посмотреть по адресу http://127.0.0.1:8000/redoc/ при локально запущенном проекте.
