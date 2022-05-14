@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from posts.models import Post, Comment, User
+from posts.models import Post, Comment, Group, Follow
 
 
 # class AuthorSerializer(serializers.ModelSerializer):
@@ -28,3 +28,15 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = '__all__'
         read_only_fields = ['author']
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = '__all__'
+
+
+class FollowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Follow
+        fields = '__all__'

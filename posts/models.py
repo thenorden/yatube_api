@@ -30,3 +30,10 @@ class Group(models.Model):
     def __str__(self):
         return self.title
 
+
+class Follow(models.Model):
+    user = models.ForeignKey(User, related_name='follower', on_delete=models.CASCADE)
+    author = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = [['user', 'author']]
